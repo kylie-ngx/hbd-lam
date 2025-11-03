@@ -3,350 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>For Thanh Lam 💌</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --pink-bg1: #ffd0dc;
-      --pink-bg2: #ffafc5;
-      --card: #fff7ee;
-      --envelope: #faf0df;
-      --accent: #ff4d7d;
-      --text: #4a2a36;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(180deg, var(--pink-bg1) 0%, var(--pink-bg2) 100%);
-      font-family: "Quicksand", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .app {
-      width: min(1100px, 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 2rem 1.5rem 4rem;
-    }
-    .screen {
-      display: none;
-      width: 100%;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      gap: 2rem;
-      text-align: center;
-    }
-    .screen.active {
-      display: flex;
-      animation: fadeIn .4s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* STEP 1 */
-    .envelope-wrapper {
-      background: transparent;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .envelope {
-      width: 360px;
-      height: 220px;
-      background: #fff7ee;
-      border-radius: 8px;
-      position: relative;
-      box-shadow: 0 20px 50px rgba(194, 71, 109, 0.18);
-    }
-    .envelope::before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 120px;
-      background: #f2e6d1;
-      top: 0;
-      left: 0;
-      clip-path: polygon(0 0, 100% 0, 50% 60%);
-      border-radius: 8px 8px 0 0;
-    }
-    .seal {
-      width: 54px;
-      height: 54px;
-      background: #ffe7ec;
-      border: 2px solid var(--accent);
-      border-radius: 999px;
-      position: absolute;
-      top: 96px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 1.3rem;
-    }
-    .title-main {
-      font-family: "Pacifico", cursive;
-      font-size: clamp(2.2rem, 4vw, 3.2rem);
-      color: #a40034;
-      text-shadow: 0 6px 20px rgba(209, 39, 98, 0.28);
-    }
-    .subtitle {
-      font-size: 1rem;
-      opacity: 0.85;
-      max-width: 460px;
-      line-height: 1.5;
-    }
-    .btn {
-      background: var(--accent);
-      border: none;
-      color: white;
-      padding: 0.85rem 2.6rem;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      font-size: 1rem;
-      transition: transform .15s ease, box-shadow .15s ease;
-      box-shadow: 0 10px 30px rgba(255, 73, 115, 0.45);
-    }
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 35px rgba(255, 73, 115, 0.55);
-    }
-
-    /* STEP 2 */
-    .letters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 1.2rem;
-      width: min(920px, 100%);
-      margin-top: 1.2rem;
-    }
-    .letter-card {
-      background: rgba(255,247,238,.16);
-      border: 2px solid rgba(255,247,238,.9);
-      border-radius: 18px;
-      padding: 2.4rem 1.1rem 1.3rem;
-      cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .letter-card::before {
-      content: "";
-      position: absolute;
-      top: -90px;
-      right: -100px;
-      width: 160px;
-      height: 160px;
-      background: rgba(255, 255, 255, 0.28);
-      border-radius: 50%;
-      filter: blur(0px);
-    }
-    .letter-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(188, 55, 102, .25);
-    }
-    .letter-name {
-      font-weight: 700;
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-    }
-    .letter-role {
-      font-size: 0.85rem;
-      opacity: .6;
-    }
-    .tiny-envelope {
-      width: 56px;
-      height: 38px;
-      background: #fff7ee;
-      border-radius: 12px 12px 10px 10px;
-      margin: 0 auto 1rem;
-      position: relative;
-      border: 1.5px solid #ffe2d1;
-    }
-    .tiny-envelope::before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0; top: 0;
-      background: #f2e6d1;
-      clip-path: polygon(0 0, 100% 0, 50% 55%);
-      border-radius: 12px 12px 0 0;
-    }
-
-    /* MODAL (STEP 3) */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(249, 141, 177, 0.35);
-      backdrop-filter: blur(6px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1.2rem;
-      z-index: 20;
-    }
-    .modal-backdrop.show { display: flex; }
-    .modal {
-      background: #fff8f3;
-      border-radius: 20px;
-      max-width: 620px;
-      width: 100%;
-      padding: 1.6rem 1.6rem 1.1rem;
-      position: relative;
-      box-shadow: 0 16px 50px rgba(215, 63, 114, 0.32);
-      animation: pop .25s ease;
-    }
-    @keyframes pop {
-      from { transform: translateY(14px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .modal-title {
-      font-weight: 700;
-      font-size: 1.1rem;
-      margin-bottom: .25rem;
-    }
-    .modal-from {
-      font-size: .85rem;
-      opacity: .6;
-      margin-bottom: .85rem;
-    }
-    .modal-body {
-      text-align: left;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      line-height: 1;
-      position: absolute;
-      right: 16px;
-      top: 14px;
-      color: rgba(0,0,0,0.25);
-      cursor: pointer;
-    }
-    footer {
-      position: fixed;
-      bottom: .6rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: .7rem;
-      opacity: .45;
-    }
-    @media (max-width: 540px) {
-      .title-main { font-size: 2.3rem; }
-      .envelope { width: 300px; }
-      .letters-grid { grid-template-columns: 1fr 1fr; }
-    }
-  </style>
+  <title>A message for Thanh Lam 💌</title>
+  <!-- main css -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- (optional) icon -->
+  <link rel="icon" href="images/seal.png" />
 </head>
 <body>
-  <div class="app">
+  <main class="app">
+
     <!-- STEP 1 -->
-    <div class="screen active" id="step1">
-      <div class="envelope-wrapper">
-        <h1 class="title-main">A message for Thanh Lam 💗</h1>
-        <p class="subtitle">Có 1 vài lời muốn gửi cậu từ hội 4 đứa đây. Click để mở thư nhaaaa.</p>
-        <div class="envelope">
-          <div class="seal">💌</div>
-        </div>
-        <button class="btn" id="openBtn">Open</button>
+    <section class="step step-1 active" id="step-1">
+      <div class="intro-card">
+        <p class="intro-title">A special message for Thanh Lam</p>
+        <button class="btn-primary" id="btn-open">Unfold</button>
       </div>
-    </div>
+    </section>
 
     <!-- STEP 2 -->
-    <div class="screen" id="step2">
-      <div>
-        <h2 style="font-family: 'Pacifico', cursive; font-size: 2.4rem; margin-bottom:.5rem;">
-          Happy Birthday, Lam!
-        </h2>
-        <p class="subtitle" style="max-width: 620px; margin-inline: auto;">
-          Đây là hộp thư của team: đọc từng cái nha. Không có trang khác đâu, chỉ 1 trang này thôi 👀
+    <section class="step step-2" id="step-2">
+      <div class="letters-wrapper">
+        <h1 class="headline">Happy Birthday, Lam! 🩷</h1>
+        <p class="subtext">
+          Đây là 4 lá thư của tụi mình. Click từng cái để đọc nha.
         </p>
+        <div class="letters-grid" id="letters-grid">
+          <!-- cards sẽ được JS đổ vào -->
+        </div>
       </div>
+    </section>
 
-      <div class="letters-grid" id="lettersGrid">
-        <!-- cards will be injected by JS -->
+    <!-- STEP 3 (MODAL) -->
+    <div class="letter-modal" id="letter-modal">
+      <div class="letter-popup">
+        <button class="modal-close" id="modal-close" aria-label="close">&times;</button>
+        <p class="modal-from" id="modal-from"></p>
+        <h2 class="modal-title">A letter for Lam</h2>
+        <p class="modal-text" id="modal-text"></p>
       </div>
     </div>
 
-    <!-- MODAL STEP 3 -->
-    <div class="modal-backdrop" id="modal">
-      <div class="modal">
-        <button class="close-btn" id="closeModal">&times;</button>
-        <div class="modal-title" id="modalTitle"></div>
-        <div class="modal-from" id="modalFrom"></div>
-        <div class="modal-body" id="modalBody"></div>
-      </div>
-    </div>
-  </div>
+    <footer class="footer">made with 💗 by Kylie & friends</footer>
+  </main>
 
-  <footer>made with 💗 by Kylie & friends</footer>
-
-  <script>
-    // ====== DATA LỜI CHÚC ======
-    const letters = [
-      {
-        sender: "Kylie",
-        label: "from Kylie",
-        role: "bestie 1/4",
-        message: `Lam ơiii 🫶
-Cảm ơn vì đã ở trong nhóm tụi mình nha. Năm nay chúc Lam chill hơn, ít overthinking hơn và làm được mấy goals bí mật (t biết mà hehe).
-Lúc nào thấy mệt thì quay lại đây đọc thư, bọn t ở đây nha 🩷`
-      },
-      {
-        sender: "Michael",
-        label: "from Michael",
-        role: "đại diện hội 4 đứa",
-        message: `Happy birthday Lam!
-Chúc mày tuổi mới xịn hơn tuổi cũ, ra quyết định cái rụp, và cái gì mày muốn làm thì được support tới cùng.
-Let’s make more memories this year 🚀`
-      },
-      {
-        sender: "Sweet",
-        label: "from Sweet",
-        role: "đứa ngọt nhất team",
-        message: `Lam bé ơi 💗
-Chúc mừng sinh nhật nhaaa. Mong là tụi mình vẫn giữ vibe dễ thương này lâu lâu lâu nữa.
-Cậu cứ vui, còn support để tụi t lo 😎`
-      },
-      {
-        sender: "Naan",
-        label: "from Naan",
-        role: "cô gái bánh nếp :))",
-        message: `Lammm 🫣
-Chúc Lam thêm tuổi mới là thêm dịu với bản thân, đỡ tự áp lực.
-Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng nữ chính á 😌💕`
-      }
-    ];
-
-    // ====== STEP HANDLING ======
-    const step1 = document.getElementById("step1");
-    const step2 = document.getElementById("step2");
-    const openBtn = document.getElementById("openBtn");
-    const lettersGrid = document.getElementById("lettersGrid");
-    const modal = document.getElementById("modal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalFrom = document.getElementById("modalFrom");
-    const modalBody = document.getElementById("modalBody");
-    const closeModal = document.getElementById("closeModal");
-
-    // show step 2
-    openBtn.addEve
+  <script src="script.js"></script>
+</body>
+</html>

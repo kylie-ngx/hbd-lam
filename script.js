@@ -82,4 +82,23 @@ modal.addEventListener("click", (e) => {
   if (e.target === modal) {
     modal.classList.remove("show");
   }
+  // ===== Balloons (Úc style) =====
+document.addEventListener("DOMContentLoaded", () => {
+  createBalloons(15); // tweak count if you want
+});
+
+function createBalloons(count) {
+  const host = document.getElementById('balloon-layer');
+  const colors = ['#e94560', '#f0e68c', '#00d8d6', '#8e44ad', '#3498db'];
+  for (let i = 0; i < count; i++) {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.style.left = `${Math.random() * 100}vw`;
+    balloon.style.animationDuration = `${Math.random() * 6 + 8}s`; // 8–14s
+    balloon.style.animationDelay = `${Math.random() * 5}s`;
+    balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    host.appendChild(balloon);
+  }
+}
+
 });

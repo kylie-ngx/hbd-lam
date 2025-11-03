@@ -6,91 +6,84 @@
   <title>A message for Thanh Lam 💌</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="images/seal.png" />
-  <!-- OVERRIDES for BIG LETTER CARDS -->
+
+  <!-- OVERRIDES: corner photos + big letter cards -->
   <style>
-    /* grid spacing a bit larger to fit big cards */
-    .letters-grid {
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.6rem;
-      max-width: 1060px;
-      margin-inline: auto;
+    /* ---- Corner photos (positions như code cũ) ---- */
+    .corner-photos{
+      position: fixed; inset: 0; z-index: 3;
+      pointer-events: none;
     }
-    /* BIG card */
+    .corner-photos .corner{
+      pointer-events: auto;
+      position: absolute;
+      width: min(150px, 20vw);
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 16px;
+      transition: transform .18s ease;
+      /* NO SHADOW */
+      box-shadow: none !important;
+    }
+    .corner-photos .corner:hover{ transform: scale(1.06) rotate(-1.2deg); }
+    .corner.tl{ top:14px; left:14px; }
+    .corner.tr{ top:14px; right:14px; }
+    .corner.bl{ bottom:14px; left:14px; }
+    .corner.br{ bottom:14px; right:14px; }
+    @media (max-width: 650px){
+      .corner-photos .corner{ width: 22vw; border-radius: 12px; }
+      .corner.tl,.corner.tr{ top:10px; } .corner.bl,.corner.br{ bottom:10px; }
+    }
+
+    /* ---- Bigger letter cards with text inside envelope (round 25) ---- */
+    .letters-grid{
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.6rem; max-width: 1060px; margin-inline:auto;
+    }
     .letter-card-xl{
       background: rgba(255,246,237,.55);
       border: 2px solid rgba(255,246,237,1);
-      border-radius: 25px;            /* rounder 25 */
+      border-radius: 25px;          /* rounder 25 */
       padding: 2rem 1.25rem 1.75rem;
-      height: 260px;                   /* make it tall */
-      display: grid;
-      place-items: center;
-      position: relative;
-      cursor: pointer;
+      height: 260px;
+      display: grid; place-items: center;
+      position: relative; cursor: pointer; overflow: hidden;
       transition: transform .18s ease;
-      overflow: hidden;
     }
     .letter-card-xl:hover{ transform: translateY(-4px); }
 
-    /* Envelope visual inside card */
     .env-large{
-      width: 88%;
-      max-width: 360px;
-      aspect-ratio: 16/11;
-      background: #fff7ee;
-      border-radius: 22px;             /* slightly softer inside */
-      position: relative;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
+      width: 88%; max-width: 360px; aspect-ratio: 16/11;
+      background: #fff7ee; border-radius: 22px; position: relative;
+      display: grid; place-items: center; overflow: hidden;
     }
-    .env-large::before{                /* top flap */
-      content:"";
-      position:absolute;
-      inset:0 0 auto 0;
-      height:56%;
-      background:#f2e6d1;
-      clip-path: polygon(0 0, 100% 0, 50% 72%);
+    .env-large::before{
+      content:""; position:absolute; inset:0 0 auto 0; height:56%;
+      background:#f2e6d1; clip-path: polygon(0 0, 100% 0, 50% 72%);
     }
+    .env-text{ position:relative; z-index:2; text-align:center; color:#742c22; }
+    .env-text .from{ font-size:.95rem; letter-spacing:.08em; opacity:.85; margin-bottom:.2rem; }
+    .env-text .name{ font-weight:800; font-size:1.6rem; line-height:1.1; }
 
-    /* Text inside envelope */
-    .env-text{
-      position: relative;              /* above flap */
-      text-align:center;
-      z-index:2;
-      color:#742c22;
-      font-family: 'Montserrat', sans-serif;
-    }
-    .env-text .from{
-      font-size:.95rem;
-      letter-spacing:.08em;
-      opacity:.85;
-      margin-bottom:.2rem;
-    }
-    .env-text .name{
-      font-weight:800;
-      font-size:1.6rem;
-      line-height:1.1;
-    }
-
-    /* modal tweaks for long text */
-    .modal-text{ max-height: 58vh; overflow:auto; }
+    /* modal scroll for long wishes */
+    .modal-text{ max-height:58vh; overflow:auto; }
   </style>
 </head>
 <body>
-  <!-- balloons layer -->
+  <!-- balloons behind everything -->
   <div id="balloon-layer" aria-hidden="true"></div>
 
-  <!-- optional photo cluster (keep/remove as you like) -->
-  <div class="photo-cluster" aria-hidden="true">
-    <img src="images/lam-1.png" alt="Lam photo 1" class="p1" />
-    <img src="images/lam-2.png" alt="Lam photo 2" class="p2" />
-    <img src="images/lam-3.png" alt="Lam photo 3" class="p3" />
-    <img src="images/lam-4.png" alt="Lam photo 4" class="p4" />
+  <!-- 4 corner photos (vị trí như code cũ) -->
+  <div class="corner-photos" aria-hidden="true">
+    <img src="images/lam-1.png" alt="Lam photo 1" class="corner tl" />
+    <img src="images/lam-2.png" alt="Lam photo 2" class="corner tr" />
+    <img src="images/lam-3.png" alt="Lam photo 3" class="corner bl" />
+    <img src="images/lam-4.png" alt="Lam photo 4" class="corner br" />
   </div>
 
   <main class="app">
     <!-- STEP 1 -->
-    <section class="step step-1 active" id="step-1">
+    <section class="step step-1 active" id="step-1" style="display:flex;">
       <div class="intro-card">
         <p class="intro-title">A special message for Thanh Lam</p>
         <button class="btn-primary" id="btn-open">Unfold</button>
@@ -98,106 +91,4 @@
     </section>
 
     <!-- STEP 2 -->
-    <section class="step step-2" id="step-2">
-      <div class="letters-wrapper">
-        <h1 class="headline">Happy Birthday, Lam! 💗</h1>
-        <p class="subtext">Đây là 4 lá thư của tụi mình. Click từng cái để đọc nha.</p>
-
-        <!-- BIG LETTER CARDS (with text inside envelope) -->
-        <div class="letters-grid" id="letters-grid">
-          <article class="letter-card-xl"
-                   data-from="from Kylie"
-                   data-message="Lam ơiii 🫶
-Cảm ơn vì đã ở trong nhóm tụi mình nha. Năm nay chúc Lam chill hơn, ít overthinking hơn và làm được mấy goals bí mật (t biết mà hehe).
-Lúc nào thấy mệt thì quay lại đây đọc thư, bọn t ở đây nha 🩷">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Kylie</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="letter-card-xl"
-                   data-from="from Michael"
-                   data-message="Happy birthday Lam!
-Chúc mày tuổi mới xịn hơn tuổi cũ, ra quyết định cái rụp, và cái gì mày muốn làm thì tụi này support tới cùng.
-Let’s make more memories this year 🚀">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Michael</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="letter-card-xl"
-                   data-from="from Sweet"
-                   data-message="Lam bé ơi 💗
-Chúc mừng sinh nhật nhaaa. Mong là tụi mình vẫn giữ vibe dễ thương này lâu lâu lâu nữa.
-Cậu cứ vui, còn support để tụi t lo 😎">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Sweet</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="letter-card-xl"
-                   data-from="from Naan"
-                   data-message="Lammm 🫣
-Chúc Lam thêm tuổi mới là thêm dịu với bản thân, đỡ tự áp lực.
-Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng nữ chính á 😌💕">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Naan</div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 3 (MODAL) -->
-    <div class="letter-modal" id="letter-modal">
-      <div class="letter-popup">
-        <button class="modal-close" id="modal-close" aria-label="close">&times;</button>
-        <p class="modal-from" id="modal-from"></p>
-        <h2 class="modal-title">A letter for Lam</h2>
-        <p class="modal-text" id="modal-text"></p>
-      </div>
-    </div>
-
-    <footer class="footer">made with 💗 by Kylie & friends</footer>
-  </main>
-
-  <!-- small inline JS to wire the cards + keep your existing script.js features -->
-  <script>
-    // step change
-    const step1=document.getElementById('step-1');
-    const step2=document.getElementById('step-2');
-    document.getElementById('btn-open').addEventListener('click',()=>{step1.classList.remove('active');step2.classList.add('active');});
-
-    // modal open/close
-    const modal=document.getElementById('letter-modal');
-    const modalFrom=document.getElementById('modal-from');
-    const modalText=document.getElementById('modal-text');
-    document.getElementById('modal-close').addEventListener('click',()=>modal.classList.remove('show'));
-    modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.remove('show'); });
-
-    // bind each big letter
-    document.querySelectorAll('.letter-card-xl').forEach(card=>{
-      card.addEventListener('click',()=>{
-        modalFrom.textContent = card.dataset.from || '';
-        modalText.textContent = card.dataset.message || '';
-        modal.classList.add('show');
-      });
-    });
-  </script>
-
-  <!-- keep your balloons + any other logic -->
-  <script src="script.js"></script>
-</body>
-</html>
+    <section class="step step-2" id="

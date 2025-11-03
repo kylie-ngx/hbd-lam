@@ -284,3 +284,74 @@ body {
     overflow-y: auto;
   }
 }
+/* === Corner photos === */
+.corner-photos {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;      /* so content remains clickable */
+  z-index: 4;
+}
+.corner-photos .corner {
+  pointer-events: auto;      /* allow hover on the images */
+  position: absolute;
+  width: min(160px, 22vw);   /* auto-resize from 1200x1200 to fit */
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(149, 33, 69, 0.25);
+  transform-origin: center;
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  filter: saturate(0.95);
+}
+.corner-photos .corner:hover {
+  transform: scale(1.06) rotate(-1.5deg);
+  box-shadow: 0 18px 40px rgba(186, 51, 86, 0.35);
+  filter: saturate(1.05);
+}
+/* positions */
+.corner.tl { top: 14px; left: 14px; }
+.corner.tr { top: 14px; right: 14px; }
+.corner.bl { bottom: 14px; left: 14px; }
+.corner.br { bottom: 14px; right: 14px; }
+
+@media (max-width: 680px) {
+  .corner-photos .corner { width: 22vw; border-radius: 12px; }
+  .corner.bl, .corner.br { bottom: 10px; }
+  .corner.tl, .corner.tr { top: 10px; }
+}
+
+/* === Balloon layer === */
+#balloon-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;               /* behind content */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* balloons themselves (reuse Úc style vibes) */
+.balloon {
+  position: absolute;
+  width: 46px;
+  height: 56px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  bottom: -100px;
+  opacity: 0.8;
+  animation-name: rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.balloon::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 52px;
+  background-color: #fff;
+  left: 50%;
+  top: 56px;
+}
+
+@keyframes rise {
+  to { transform: translateY(-115vh); }
+}
+

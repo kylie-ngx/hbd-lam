@@ -7,60 +7,61 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="images/seal.png" />
 
-  <!-- LOCAL OVERRIDES (positions + big letters + balloons) -->
+  <!-- OVERRIDES: 2x2 letter grid + photo positions + (no-frame, no-shadow) photos -->
   <style>
-    /* make app above photos/balloons to avoid click issues */
     .app { position: relative; z-index: 5; }
 
-    /* ===== cluster 4 photos (closer to center) ===== */
-    .corner-photos{
-      position: fixed; inset: 0; z-index: 3;
-      pointer-events: none; /* content still clickable */
-    }
+    /* move photos farther from center; hover only transform */
+    .corner-photos{ position: fixed; inset: 0; z-index: 3; pointer-events: none; }
     .corner-photos .corner{
-      pointer-events: auto;             /* enable hover on image */
+      pointer-events: auto;
       position: absolute;
-      width: min(150px, 20vw);          /* auto scale from 1200x1200 */
+      width: min(150px, 20vw);
       aspect-ratio: 1/1;
       object-fit: cover;
+      border: none;             /* no frame */
+      box-shadow: none !important; /* no shadow */
       border-radius: 16px;
       transition: transform .18s ease;
-      box-shadow: none !important;      /* no shadow */
     }
-    /* move them inward (near center) */
-    .corner.tl{ top: 12%; left: 18%; }
-    .corner.tr{ top: 12%; right: 18%; }
-    .corner.bl{ bottom: 12%; left: 18%; }
-    .corner.br{ bottom: 12%; right: 18%; }
     .corner-photos .corner:hover{ transform: scale(1.06) rotate(-1.2deg); }
-
+    /* farther from center than before */
+    .corner.tl{ top: 8%;  left: 5%; }
+    .corner.tr{ top: 8%;  right: 5%; }
+    .corner.bl{ bottom: 8%; left: 5%; }
+    .corner.br{ bottom: 8%; right: 5%; }
     @media (max-width: 900px){
-      .corner.tl{ top: 10%; left: 12%; }
-      .corner.tr{ top: 10%; right: 12%; }
-      .corner.bl{ bottom: 10%; left: 12%; }
-      .corner.br{ bottom: 10%; right: 12%; }
+      .corner.tl{ top: 6%;  left: 4%; }
+      .corner.tr{ top: 6%;  right: 4%; }
+      .corner.bl{ bottom: 6%; left: 4%; }
+      .corner.br{ bottom: 6%; right: 4%; }
     }
     @media (max-width: 600px){
       .corner-photos .corner{ width: 22vw; border-radius: 12px; }
     }
 
-    /* ===== BIG letter cards (envelope with text, round 25) ===== */
+    /* 2x2 letters centered */
     .letters-grid{
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.6rem; max-width: 1060px; margin-inline: auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr)); /* EXACT 2 cols */
+      grid-auto-rows: 1fr;
+      gap: 1.6rem;
+      max-width: 860px;   /* tighter so it forms a neat 2x2 block */
+      margin: 0 auto;     /* center the grid */
+      justify-items: stretch;
+      align-items: stretch;
     }
+    /* keep your big letter card look */
     .letter-card-xl{
       background: rgba(255,246,237,.55);
       border: 2px solid rgba(255,246,237,1);
-      border-radius: 25px;     /* round 25 */
+      border-radius: 25px;
       padding: 2rem 1.25rem 1.75rem;
       height: 260px;
       display: grid; place-items: center;
-      position: relative; cursor: pointer; overflow: hidden;
-      transition: transform .18s ease;
+      cursor: pointer; overflow: hidden; transition: transform .18s ease;
     }
     .letter-card-xl:hover{ transform: translateY(-4px); }
-
     .env-large{
       width: 88%; max-width: 360px; aspect-ratio: 16/11;
       background: #fff7ee; border-radius: 22px; position: relative;
@@ -74,33 +75,29 @@
     .env-text .from{ font-size:.95rem; letter-spacing:.08em; opacity:.85; margin-bottom:.2rem; }
     .env-text .name{ font-weight:800; font-size:1.6rem; line-height:1.1; }
 
-    /* modal scroll for long wishes */
     .modal-text{ max-height:58vh; overflow:auto; }
 
-    /* ===== Balloons ===== */
-    #balloon-layer{
-      position: fixed; inset: 0; z-index: 1;
-      pointer-events: none; overflow: hidden;
-    }
+    /* balloons */
+    #balloon-layer{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
     .balloon{
-      position: absolute;
-      width: 46px; height: 56px;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      bottom: -100px; opacity: 0.8;
-      animation: rise linear infinite;
+      position:absolute; width:46px; height:56px;
+      border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+      bottom:-100px; opacity:.8; animation:rise linear infinite;
     }
-    .balloon::after{
-      content: ''; position: absolute; width: 2px; height: 52px;
-      background-color: #fff; left: 50%; top: 56px;
+    .balloon::after{ content:''; position:absolute; width:2px; height:52px; background:#fff; left:50%; top:56px; }
+    @keyframes rise{ to{ transform: translateY(-115vh);} }
+
+    /* responsive: stack to 1 column on small phones */
+    @media (max-width: 640px){
+      .letters-grid{ grid-template-columns: 1fr; max-width: 480px; }
     }
-    @keyframes rise{ to { transform: translateY(-115vh); } }
   </style>
 </head>
 <body>
   <!-- balloons behind everything -->
   <div id="balloon-layer" aria-hidden="true"></div>
 
-  <!-- 4 photos (closer & nearer center) -->
+  <!-- 4 photos -->
   <div class="corner-photos" aria-hidden="true">
     <img src="images/lam-1.png" alt="Lam photo 1" class="corner tl" />
     <img src="images/lam-2.png" alt="Lam photo 2" class="corner tr" />
@@ -123,31 +120,27 @@
         <h1 class="headline">Happy Birthday, Lam! 💗</h1>
         <p class="subtext">Đây là 4 lá thư của tụi mình. Click từng cái để đọc nha.</p>
 
+        <!-- 2x2 LETTERS -->
         <div class="letters-grid" id="letters-grid">
           <article class="letter-card-xl"
             data-from="from Kylie"
             data-message="Lam ơiii 🫶
 Cảm ơn vì đã ở trong nhóm tụi mình nha. Năm nay chúc Lam chill hơn, ít overthinking hơn và làm được mấy goals bí mật (t biết mà hehe).
 Lúc nào thấy mệt thì quay lại đây đọc thư, bọn t ở đây nha 🩷">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Kylie</div>
-              </div>
-            </div>
+            <div class="env-large"><div class="env-text">
+              <div class="from">LETTER FROM</div><div class="name">Kylie</div>
+            </div></div>
           </article>
 
           <article class="letter-card-xl"
             data-from="from Michael"
-            data-message="Happy birthday Lam!
-Chúc mày tuổi mới xịn hơn tuổi cũ, ra quyết định cái rụp, và cái gì mày muốn làm thì tụi này support tới cùng.
-Let’s make more memories this year 🚀">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Michael</div>
-              </div>
-            </div>
+            data-message="dear bà lya,
+I've been knowin' yo bum ahh since when we were still in highschool. Now im sophomore and ur u30 (lol), you have become such a slay queen, cutesie and demure. Just wanna say that I appreciate that ur still here with us and I enjoy your presence a lot around everyone. You really make the voicechat more joyful and trollier.
+Mừng ngày lya đc đẻ nhé
+Sincerely, mike">
+            <div class="env-large"><div class="env-text">
+              <div class="from">LETTER FROM</div><div class="name">Michael</div>
+            </div></div>
           </article>
 
           <article class="letter-card-xl"
@@ -155,12 +148,9 @@ Let’s make more memories this year 🚀">
             data-message="Lam bé ơi 💗
 Chúc mừng sinh nhật nhaaa. Mong là tụi mình vẫn giữ vibe dễ thương này lâu lâu lâu nữa.
 Cậu cứ vui, còn support để tụi t lo 😎">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Sweet</div>
-              </div>
-            </div>
+            <div class="env-large"><div class="env-text">
+              <div class="from">LETTER FROM</div><div class="name">Sweet</div>
+            </div></div>
           </article>
 
           <article class="letter-card-xl"
@@ -168,12 +158,9 @@ Cậu cứ vui, còn support để tụi t lo 😎">
             data-message="Lammm 🫣
 Chúc Lam thêm tuổi mới là thêm dịu với bản thân, đỡ tự áp lực.
 Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng nữ chính á 😌💕">
-            <div class="env-large">
-              <div class="env-text">
-                <div class="from">LETTER FROM</div>
-                <div class="name">Naan</div>
-              </div>
-            </div>
+            <div class="env-large"><div class="env-text">
+              <div class="from">LETTER FROM</div><div class="name">Naan</div>
+            </div></div>
           </article>
         </div>
       </div>
@@ -194,16 +181,16 @@ Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng
 
   <!-- JS: step switch, modal, balloons -->
   <script>
-    // --- ensure Unfold works even if external CSS changes ---
+    // switch step
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
     document.getElementById('btn-open').addEventListener('click', () => {
       step1.classList.remove('active');
-      step1.style.display = 'none';        // hard-hide to avoid overlay
-      step2.classList.add('active');       // CSS .step.active => display:flex
+      step1.style.display = 'none';
+      step2.classList.add('active');
     });
 
-    // --- modal open/close ---
+    // modal
     const modal = document.getElementById('letter-modal');
     const modalFrom = document.getElementById('modal-from');
     const modalText = document.getElementById('modal-text');
@@ -217,10 +204,8 @@ Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng
       });
     });
 
-    // --- balloons like Úc birthday ---
-    document.addEventListener('DOMContentLoaded', () => {
-      createBalloons(15);
-    });
+    // balloons
+    document.addEventListener('DOMContentLoaded', () => { createBalloons(15); });
     function createBalloons(count) {
       const host = document.getElementById('balloon-layer');
       const colors = ['#e94560', '#f0e68c', '#00d8d6', '#8e44ad', '#3498db'];
@@ -228,7 +213,7 @@ Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng
         const b = document.createElement('div');
         b.className = 'balloon';
         b.style.left = `${Math.random() * 100}vw`;
-        b.style.animationDuration = `${Math.random() * 6 + 8}s`;  // 8–14s
+        b.style.animationDuration = `${Math.random() * 6 + 8}s`;
         b.style.animationDelay = `${Math.random() * 5}s`;
         b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         host.appendChild(b);

@@ -6,17 +6,60 @@
   <title>A message for Thanh Lam 💌</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="images/seal.png" />
+  <!-- local overrides just for the 4 photos -->
+  <style>
+    /* Cluster of 4 photos near center */
+    .photo-cluster {
+      position: fixed;
+      inset: 0;
+      z-index: 3;              /* above balloons, below content */
+      pointer-events: none;    /* content stays clickable */
+    }
+    .photo-cluster img {
+      position: absolute;
+      width: min(150px, 20vw); /* auto shrink from 1200x1200 */
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 16px;
+      transform-origin: center;
+      transition: transform .18s ease;
+      pointer-events: auto;    /* enable hover on the images only */
+    }
+    /* positions: closer to center */
+    .p1 { left: 12%; top: 22%; }
+    .p2 { right: 12%; top: 22%; }
+    .p3 { left: 12%; bottom: 18%; }
+    .p4 { right: 12%; bottom: 18%; }
+
+    /* simple hover: scale & tiny rotate — NO shadow */
+    .photo-cluster img:hover { transform: scale(1.06) rotate(-1.2deg); }
+
+    /* tighten even more on small screens */
+    @media (max-width: 900px) {
+      .p1 { left: 8%;  top: 18%; }
+      .p2 { right: 8%; top: 18%; }
+      .p3 { left: 8%;  bottom: 14%; }
+      .p4 { right: 8%; bottom: 14%; }
+    }
+    @media (max-width: 600px) {
+      .photo-cluster img { width: 22vw; border-radius: 12px; }
+      .p1 { left: 6%;  top: 16%; }
+      .p2 { right: 6%; top: 16%; }
+      .p3 { left: 6%;  bottom: 12%; }
+      .p4 { right: 6%; bottom: 12%; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Balloon layer sits behind everything -->
+  <!-- balloons behind everything -->
   <div id="balloon-layer" aria-hidden="true"></div>
 
-  <!-- Corner photos (hover-able) -->
-  <div class="corner-photos">
-    <img src="images/lam-1.jpg" alt="Lam photo 1" class="corner tl" />
-    <img src="images/lam-2.jpg" alt="Lam photo 2" class="corner tr" />
-    <img src="images/lam-3.jpg" alt="Lam photo 3" class="corner bl" />
-    <img src="images/lam-4.jpg" alt="Lam photo 4" class="corner br" />
+  <!-- 4 photos (centered cluster) -->
+  <div class="photo-cluster" aria-hidden="true">
+    <img src="images/lam-1.png" alt="Lam photo 1" class="p1" />
+    <img src="images/lam-2.png" alt="Lam photo 2" class="p2" />
+    <img src="images/lam-3.png" alt="Lam photo 3" class="p3" />
+    <img src="images/lam-4.png" alt="Lam photo 4" class="p4" />
   </div>
 
   <main class="app">

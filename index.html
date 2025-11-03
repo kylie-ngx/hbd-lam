@@ -7,97 +7,74 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="images/seal.png" />
 
-  <!-- OVERRIDES: 2x2 letter grid + photo positions + (no-frame, no-shadow) photos -->
+  <!-- ONLY-CHANGED: photo styles (bigger, hover, no frame/shadow) -->
   <style>
     .app { position: relative; z-index: 5; }
 
-    /* move photos farther from center; hover only transform */
-    .corner-photos{ position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+    /* balloons (unchanged) */
+    #balloon-layer{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+    .balloon{ position:absolute; width:46px; height:56px; border-radius:50% 50% 50% 50%/60% 60% 40% 40%; bottom:-100px; opacity:.8; animation:rise linear infinite; }
+    .balloon::after{ content:''; position:absolute; width:2px; height:52px; background:#fff; left:50%; top:56px; }
+    @keyframes rise{ to{ transform:translateY(-115vh);} }
+
+    /* ===== ONLY-CHANGED BLOCK ===== */
+    .corner-photos{ position:fixed; inset:0; z-index:3; pointer-events:none; }
     .corner-photos .corner{
-      pointer-events: auto;
-      position: absolute;
-      width: min(150px, 20vw);
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border: none;             /* no frame */
-      box-shadow: none !important; /* no shadow */
-      border-radius: 16px;
-      transition: transform .18s ease;
+      pointer-events:auto;
+      position:absolute;
+      width:min(180px, 24vw);     /* bigger than before */
+      aspect-ratio:1/1;
+      object-fit:cover;
+      border:none;                /* no frame */
+      outline:none;
+      box-shadow:none !important; /* no shadow */
+      border-radius:16px;
+      transition:transform .18s ease;
     }
-    .corner-photos .corner:hover{ transform: scale(1.06) rotate(-1.2deg); }
-    /* farther from center than before */
-    .corner.tl{ top: 8%;  left: 5%; }
-    .corner.tr{ top: 8%;  right: 5%; }
-    .corner.bl{ bottom: 8%; left: 5%; }
-    .corner.br{ bottom: 8%; right: 5%; }
+    .corner-photos .corner:hover{ transform:scale(1.1) rotate(-2deg); } /* hover effect */
+
+    /* keep your last positions so letters won’t cover */
+    .corner.tl{ top:8%;  left:5%; }
+    .corner.tr{ top:8%;  right:5%; }
+    .corner.bl{ bottom:8%; left:5%; }
+    .corner.br{ bottom:8%; right:5%; }
+
     @media (max-width: 900px){
-      .corner.tl{ top: 6%;  left: 4%; }
-      .corner.tr{ top: 6%;  right: 4%; }
-      .corner.bl{ bottom: 6%; left: 4%; }
-      .corner.br{ bottom: 6%; right: 4%; }
+      .corner.tl{ top:6%;  left:4%; }
+      .corner.tr{ top:6%;  right:4%; }
+      .corner.bl{ bottom:6%; left:4%; }
+      .corner.br{ bottom:6%; right:4%; }
     }
-    @media (max-width: 600px){
-      .corner-photos .corner{ width: 22vw; border-radius: 12px; }
+    @media (max-width:600px){
+      .corner-photos .corner{ width:24vw; border-radius:12px; }
     }
 
-    /* 2x2 letters centered */
+    /* letters layout (unchanged 2x2) */
     .letters-grid{
-      display: grid;
-      grid-template-columns: repeat(2, minmax(260px, 1fr)); /* EXACT 2 cols */
-      grid-auto-rows: 1fr;
-      gap: 1.6rem;
-      max-width: 860px;   /* tighter so it forms a neat 2x2 block */
-      margin: 0 auto;     /* center the grid */
-      justify-items: stretch;
-      align-items: stretch;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(260px,1fr));
+      grid-auto-rows:1fr;
+      gap:1.6rem;
+      max-width:860px;
+      margin:0 auto;
     }
-    /* keep your big letter card look */
-    .letter-card-xl{
-      background: rgba(255,246,237,.55);
-      border: 2px solid rgba(255,246,237,1);
-      border-radius: 25px;
-      padding: 2rem 1.25rem 1.75rem;
-      height: 260px;
-      display: grid; place-items: center;
-      cursor: pointer; overflow: hidden; transition: transform .18s ease;
-    }
-    .letter-card-xl:hover{ transform: translateY(-4px); }
-    .env-large{
-      width: 88%; max-width: 360px; aspect-ratio: 16/11;
-      background: #fff7ee; border-radius: 22px; position: relative;
-      display: grid; place-items: center; overflow: hidden;
-    }
-    .env-large::before{
-      content:""; position:absolute; inset:0 0 auto 0; height:56%;
-      background:#f2e6d1; clip-path: polygon(0 0, 100% 0, 50% 72%);
-    }
+    .letter-card-xl{ background:rgba(255,246,237,.55); border:2px solid rgba(255,246,237,1); border-radius:25px; padding:2rem 1.25rem 1.75rem; height:260px; display:grid; place-items:center; cursor:pointer; overflow:hidden; transition:transform .18s ease; }
+    .letter-card-xl:hover{ transform:translateY(-4px); }
+    .env-large{ width:88%; max-width:360px; aspect-ratio:16/11; background:#fff7ee; border-radius:22px; position:relative; display:grid; place-items:center; overflow:hidden; }
+    .env-large::before{ content:""; position:absolute; inset:0 0 auto 0; height:56%; background:#f2e6d1; clip-path:polygon(0 0,100% 0,50% 72%); }
     .env-text{ position:relative; z-index:2; text-align:center; color:#742c22; }
     .env-text .from{ font-size:.95rem; letter-spacing:.08em; opacity:.85; margin-bottom:.2rem; }
     .env-text .name{ font-weight:800; font-size:1.6rem; line-height:1.1; }
-
     .modal-text{ max-height:58vh; overflow:auto; }
 
-    /* balloons */
-    #balloon-layer{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
-    .balloon{
-      position:absolute; width:46px; height:56px;
-      border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
-      bottom:-100px; opacity:.8; animation:rise linear infinite;
-    }
-    .balloon::after{ content:''; position:absolute; width:2px; height:52px; background:#fff; left:50%; top:56px; }
-    @keyframes rise{ to{ transform: translateY(-115vh);} }
-
-    /* responsive: stack to 1 column on small phones */
-    @media (max-width: 640px){
-      .letters-grid{ grid-template-columns: 1fr; max-width: 480px; }
-    }
+    @media (max-width:640px){ .letters-grid{ grid-template-columns:1fr; max-width:480px; } }
   </style>
 </head>
 <body>
-  <!-- balloons behind everything -->
+  <!-- balloons -->
   <div id="balloon-layer" aria-hidden="true"></div>
 
-  <!-- 4 photos -->
+  <!-- 4 photos (bigger, hover, no frame/shadow) -->
   <div class="corner-photos" aria-hidden="true">
     <img src="images/lam-1.png" alt="Lam photo 1" class="corner tl" />
     <img src="images/lam-2.png" alt="Lam photo 2" class="corner tr" />
@@ -118,52 +95,37 @@
     <section class="step step-2" id="step-2">
       <div class="letters-wrapper" style="text-align:center;margin:0 auto;">
         <h1 class="headline">Happy Birthday, Lam! 💗</h1>
-        <p class="subtext">Đây là 4 lá thư của tụi mình. Click từng cái để đọc nha.</p>
+        <p class="subtext">Here are letters from hội cy em mik. Click to read nha.</p>
 
-        <!-- 2x2 LETTERS -->
         <div class="letters-grid" id="letters-grid">
-          <article class="letter-card-xl"
-            data-from="from Kylie"
-            data-message="Dear Lam 🫶
+          <article class="letter-card-xl" data-from="from Kylie" 
+            data-message="Dear Lammmm 🫶
 Hehe chúc em sinh nhật tuổi 20 thiệt nhiều tiếng cười, thiệt xinh đẹp và hạnh phúc nha. K nghĩ mình biết nhau được 3 năm rùi í, thời gian trôi qua nhanh thiệt (nma gặp off hơi ít nha, phải gặp thêm!!). Chúc Lya mãi vui vẻ, tích cực, giỏi giang và xinh xắn nhớ^^ Tuổi mới đạt được hết mục tiêu đề ra, ước gì được nấy nekkk. Welcome to hội U30 TT Giờ mình được trêu thg kiên là con nít ranh r=))))
 Thank you for being very supportive, for being by my side, for being a nice sis to me <3 iuu">
-            <div class="env-large"><div class="env-text">
-              <div class="from">LETTER FROM</div><div class="name">Kylie</div>
-            </div></div>
+            <div class="env-large"><div class="env-text"><div class="from">LETTER FROM</div><div class="name">Kylie</div></div></div>
           </article>
 
-          <article class="letter-card-xl"
-            data-from="from Michael"
-            data-message="dear bà lya,
+          <article class="letter-card-xl" data-from="from Michael" data-message="dear bà lya,
 I've been knowin' yo bum ahh since when we were still in highschool. Now im sophomore and ur u30 (lol), you have become such a slay queen, cutesie and demure. Just wanna say that I appreciate that ur still here with us and I enjoy your presence a lot around everyone. You really make the voicechat more joyful and trollier.
 Mừng ngày lya đc đẻ nhé
 Sincerely, mike">
-            <div class="env-large"><div class="env-text">
-              <div class="from">LETTER FROM</div><div class="name">Michael</div>
-            </div></div>
+            <div class="env-large"><div class="env-text"><div class="from">LETTER FROM</div><div class="name">Michael</div></div></div>
           </article>
 
-          <article class="letter-card-xl"
-            data-from="from Sweet"
-            data-message="chúc chị tuổi 20 thật đẹp!!! tiếp cận đầu 2x is ‘FIRE’!! it’s like starting a new chapter of your lifeee! hope all the pages are filled with rainbow colors only 🤞🤞🤞">
-            <div class="env-large"><div class="env-text">
-              <div class="from">LETTER FROM</div><div class="name">Sweet</div>
-            </div></div>
+          <article class="letter-card-xl" data-from="from Sweet" data-message="chúc chị tuổi 20 thật đẹp!!! tiếp cận đầu 2x is ‘FIRE’!! it’s like starting a new chapter of your lifeee! hope all the pages are filled with rainbow colors only 🤞🤞🤞">
+            <div class="env-large"><div class="env-text"><div class="from">LETTER FROM</div><div class="name">Sweet</div></div></div>
           </article>
 
-          <article class="letter-card-xl"
-            data-from="from Kylie's special friend"
-            data-message="Happy birthday Thanh LAMMM!!!!! 
-Chúc mừng sinh nhật 20 tuổi của Thanh Lam cực kỳ xinh xắn, dễ thương và cu ti nhất trái đất! Chúc em tuổi mới thật nhiều niềm vui, luôn cười thật là tươi mỗi ngày, da đẹp hơn, và túi tiền đầy như niêu cơm của thạch sanh, và không ai hỏi bao giờ lấy chồng. Mong em luôn gặp điều tốt đẹp, lấy chồng sớm, ăn ngon ngủ ngon, và giữ mãi sự tươi trẻ, dễ thương, nghịch ngợm vui vẻ và duyên dáng như bây giờ. Chúc em tuổi 20 xinh hơn, và thành công rực rỡ và mỗi ngày đều vui như sinh nhật! ">
-            <div class="env-large"><div class="env-text">
-              <div class="from">LETTER FROM</div><div class="name">Kylie's special friend</div>
-            </div></div>
+          <article class="letter-card-xl" data-from="from Naan" data-message="Lammm 🫣
+Chúc Lam thêm tuổi mới là thêm dịu với bản thân, đỡ tự áp lực.
+Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng nữ chính á 😌💕">
+            <div class="env-large"><div class="env-text"><div class="from">LETTER FROM</div><div class="name">Naan</div></div></div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- STEP 3 (MODAL) -->
+    <!-- MODAL -->
     <div class="letter-modal" id="letter-modal">
       <div class="letter-popup">
         <button class="modal-close" id="modal-close" aria-label="close">&times;</button>
@@ -176,25 +138,22 @@ Chúc mừng sinh nhật 20 tuổi của Thanh Lam cực kỳ xinh xắn, dễ t
     <footer class="footer">made with 💗 by Kylie & friends</footer>
   </main>
 
-  <!-- JS: step switch, modal, balloons -->
   <script>
-    // switch step
+    // step switch
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
     document.getElementById('btn-open').addEventListener('click', () => {
-      step1.classList.remove('active');
-      step1.style.display = 'none';
-      step2.classList.add('active');
+      step1.classList.remove('active'); step1.style.display='none'; step2.classList.add('active');
     });
 
     // modal
     const modal = document.getElementById('letter-modal');
     const modalFrom = document.getElementById('modal-from');
     const modalText = document.getElementById('modal-text');
-    document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('show'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
-    document.querySelectorAll('.letter-card-xl').forEach(card => {
-      card.addEventListener('click', () => {
+    document.getElementById('modal-close').addEventListener('click',()=>modal.classList.remove('show'));
+    modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.remove('show'); });
+    document.querySelectorAll('.letter-card-xl').forEach(card=>{
+      card.addEventListener('click',()=>{
         modalFrom.textContent = card.dataset.from || '';
         modalText.textContent = card.dataset.message || '';
         modal.classList.add('show');
@@ -202,17 +161,17 @@ Chúc mừng sinh nhật 20 tuổi của Thanh Lam cực kỳ xinh xắn, dễ t
     });
 
     // balloons
-    document.addEventListener('DOMContentLoaded', () => { createBalloons(15); });
-    function createBalloons(count) {
-      const host = document.getElementById('balloon-layer');
-      const colors = ['#e94560', '#f0e68c', '#00d8d6', '#8e44ad', '#3498db'];
-      for (let i = 0; i < count; i++) {
-        const b = document.createElement('div');
-        b.className = 'balloon';
-        b.style.left = `${Math.random() * 100}vw`;
-        b.style.animationDuration = `${Math.random() * 6 + 8}s`;
-        b.style.animationDelay = `${Math.random() * 5}s`;
-        b.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    document.addEventListener('DOMContentLoaded',()=>{ createBalloons(15); });
+    function createBalloons(count){
+      const host=document.getElementById('balloon-layer');
+      const colors=['#e94560','#f0e68c','#00d8d6','#8e44ad','#3498db'];
+      for(let i=0;i<count;i++){
+        const b=document.createElement('div');
+        b.className='balloon';
+        b.style.left=`${Math.random()*100}vw`;
+        b.style.animationDuration=`${Math.random()*6+8}s`;
+        b.style.animationDelay=`${Math.random()*5}s`;
+        b.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
         host.appendChild(b);
       }
     }

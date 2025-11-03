@@ -7,90 +7,97 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="images/seal.png" />
 
-  <!-- ==== HARDENED MOBILE OVERRIDES (scroll + layout) ==== -->
+  <!-- HARD OVERRIDES: make page scrollable + mobile-fit letters -->
   <style>
-    /* 1) Re-enable vertical scrolling */
-    html, body { height: auto !important; }
+    /* ===== Unblock scrolling from old CSS ===== */
+    html, body, main, .app { height: auto !important; }
     body { overflow-y: auto !important; overflow-x: hidden !important; }
 
-    /* 2) Steps must be in normal flow (not absolute/100% height) */
+    /* ===== Steps in normal flow (not absolute 100% screens) ===== */
     .step {
       position: static !important;
       inset: auto !important;
       width: 100% !important;
       height: auto !important;
-      min-height: 100vh;               /* so first section still fills screen */
-      padding: 1.5rem 1rem 5rem;
-      display: none;                   /* keep your active toggle */
+      display: none;
       justify-content: center;
       align-items: flex-start;
       gap: 1rem;
+      padding: 1.25rem 1rem 5rem;
     }
     .step.active { display: flex; }
-    .step-1 { align-items: center; }
-    .step-2 { flex-direction: column; text-align: center; }
+    .step-1 { align-items: center; min-height: 90vh; }
 
-    /* 3) Balloons behind everything and non-interactive */
+    /* ===== Keep content above decorations ===== */
+    .app { position: relative !important; z-index: 5 !important; }
+
+    /* ===== Balloons (non-interactive, behind) ===== */
     #balloon-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
     .balloon {
-      position: absolute; width: 44px; height: 54px;
+      position: absolute; width: 36px; height: 44px;   /* a bit smaller for phones */
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
       bottom: -100px; opacity: .8; animation: rise linear infinite;
     }
-    .balloon::after { content:''; position:absolute; width:2px; height:50px; background:#fff; left:50%; top:54px; }
+    .balloon::after { content:''; position:absolute; width:2px; height:44px; background:#fff; left:50%; top:44px; }
     @keyframes rise { to { transform: translateY(-115vh); } }
 
-    /* 4) Corner photos — hover only, no frame/shadow/background */
-    .app { position: relative; z-index: 5; }
+    /* ===== Corner photos: hover only, no frame/shadow/background ===== */
     .corner-photos { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
     .corner-photos img {
       pointer-events: auto;
       position: absolute;
-      width: min(180px, 24vw);           /* bigger on desktop, scales on mobile */
+      width: min(150px, 24vw);
       aspect-ratio: 1/1;
       object-fit: cover;
-      background: transparent;           /* no background */
+      background: transparent;
       border: none; outline: none; box-shadow: none !important;
-      border-radius: 16px;
+      border-radius: 14px;
       transition: transform .18s ease;
     }
     .corner-photos img:hover { transform: scale(1.08) rotate(-2deg); }
-    /* push away from center so letters don’t cover */
+    /* push a bit outward so letters won't cover */
     .corner.tl { top: 7%;  left: 4%; }
     .corner.tr { top: 7%;  right: 4%; }
     .corner.bl { bottom: 7%; left: 4%; }
     .corner.br { bottom: 7%; right: 4%; }
     @media (max-width: 640px){
-      .corner-photos img { width: 24vw; border-radius: 12px; }
+      .corner-photos img { width: 22vw; border-radius: 12px; }
     }
 
-    /* 5) Letters grid — 2x2 on wide, 1-col on small; cards slightly smaller */
+    /* ===== Letters grid: MOBILE FIRST ===== */
+    .letters-wrapper { width: 100%; max-width: 960px; margin: 0 auto; }
     .letters-grid{
       display: grid;
-      grid-template-columns: repeat(2, minmax(220px, 1fr));
-      gap: 1.2rem;
-      max-width: 760px;                 /* tighter so it fits nicely */
+      grid-template-columns: 1fr;             /* 1 column on phones */
+      gap: 12px;                               /* tight gap for phones */
+      max-width: 520px;                        /* keep it compact */
       margin: 0 auto;
     }
-    @media (max-width: 720px){
-      .letters-grid { grid-template-columns: 1fr; max-width: 520px; }
+    /* bump to 2 columns on wider screens */
+    @media (min-width: 540px){
+      .letters-grid{
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+        max-width: 720px;
+        gap: 14px;
+      }
     }
 
-    /* letter cards (shrunk) */
+    /* ===== Letter card: smaller profile ===== */
     .letter-card-xl{
       background: rgba(255,246,237,.55);
       border: 2px solid rgba(255,246,237,1);
-      border-radius: 25px;
-      padding: 1.4rem 1rem 1.2rem;
-      height: 220px;                    /* smaller than before */
+      border-radius: 20px;                     /* smaller radius reads cleaner on phone */
+      padding: 1rem .9rem .9rem;
+      height: 165px;                           /* SHRUNK to fit mobile */
       display: grid; place-items: center;
-      cursor: pointer; overflow: hidden; transition: transform .16s ease;
+      cursor: pointer; overflow: hidden;
+      transition: transform .14s ease;
     }
-    .letter-card-xl:hover { transform: translateY(-3px); }
+    .letter-card-xl:hover{ transform: translateY(-2px); }
 
     .env-large{
-      width: 86%; max-width: 320px; aspect-ratio: 16/11;
-      background: #fff7ee; border-radius: 20px; position: relative;
+      width: 92%; max-width: 280px; aspect-ratio: 16/11;
+      background: #fff7ee; border-radius: 16px; position: relative;
       display: grid; place-items: center; overflow: hidden;
     }
     .env-large::before{
@@ -98,14 +105,15 @@
       background:#f2e6d1; clip-path: polygon(0 0, 100% 0, 50% 72%);
     }
     .env-text{ position:relative; z-index:2; text-align:center; color:#742c22; }
-    .env-text .from{ font-size:.9rem; letter-spacing:.08em; opacity:.85; margin-bottom:.15rem; }
-    .env-text .name{ font-weight:800; font-size:1.4rem; line-height:1.1; }
+    .env-text .from{ font-size:.8rem; letter-spacing:.07em; opacity:.85; margin-bottom:.1rem; }
+    .env-text .name{ font-weight:800; font-size:1.15rem; line-height:1.05; }
 
+    /* Modal text scroll room */
     .modal-text { max-height: 65vh; overflow: auto; }
   </style>
 </head>
 <body>
-  <!-- balloons -->
+  <!-- balloons behind everything -->
   <div id="balloon-layer" aria-hidden="true"></div>
 
   <!-- photos -->
@@ -176,17 +184,17 @@ Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng
 
   <!-- JS: step switch, modal, balloons -->
   <script>
-    // Ensure Step 1 is fully removed from flow so it doesn't block scroll
+    // Switch to Step 2 and hard-hide Step 1 so it can't block scroll
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
     document.getElementById('btn-open').addEventListener('click', () => {
       step1.classList.remove('active');
-      step1.style.display = 'none';
+      step1.style.display = 'none';     // IMPORTANT: remove from flow
       step2.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Modal logic
+    // Modal
     const modal = document.getElementById('letter-modal');
     const modalFrom = document.getElementById('modal-from');
     const modalText = document.getElementById('modal-text');

@@ -7,75 +7,80 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="images/seal.png" />
 
-  <!-- ==== OVERRIDES: enable vertical scrolling + mobile-friendly steps/layout ==== -->
+  <!-- ==== OVERRIDES to allow scrolling + smaller cards on mobile ==== -->
   <style>
-    /* 1) Cho phép cuộn dọc, vô hiệu hóa lock từ CSS cũ */
+    /* 1) Bật scroll, vô hiệu overflow hidden từ CSS cũ */
     html, body { height: auto !important; }
     body { overflow-y: auto !important; overflow-x: hidden !important; }
 
-    /* 2) Steps dùng flow bình thường để nội dung dài có thể cuộn */
+    /* 2) Steps dùng flow tự nhiên để nội dung dài được cuộn */
     .step {
-      position: relative !important;
-      inset: auto !important;
+      position: relative !important; inset: auto !important;
       width: 100% !important;
-      min-height: 100vh;         /* step vẫn “đầy màn hình” lúc mở */
-      padding: 1.5rem 1rem 5rem; /* chừa đáy cho footer */
+      min-height: 100vh;
+      padding: 1.25rem 1rem 5rem;
       display: none;
       justify-content: center;
       align-items: flex-start;
       gap: 1rem;
     }
     .step.active { display: flex; }
-    .step-1 { align-items: center; } /* card giữa màn hình */
+    .step-1 { align-items: center; }
     .step-2 { flex-direction: column; text-align: center; }
 
-    /* 3) Ảnh góc: hover only, no frame/shadow (có thể giữ như cậu đang dùng) */
-    .app { position: relative; z-index: 5; }
-    .corner-photos { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
-    .corner-photos .corner{
-      pointer-events: auto;
-      position: absolute;
-      width: min(180px, 24vw);
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border: none; outline: none; box-shadow: none !important;
-      border-radius: 16px;
-      transition: transform .18s ease;
+    /* 3) Balloons layer dưới cùng, không chặn thao tác */
+    #balloon-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .balloon {
+      position: absolute; width: 44px; height: 54px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      bottom: -100px; opacity: 0.8; animation: rise linear infinite;
     }
-    .corner-photos .corner:hover { transform: scale(1.1) rotate(-2deg); }
-    /* để tránh che thư: hơi xa center */
-    .corner.tl{ top: 7%;  left: 4%; }
-    .corner.tr{ top: 7%;  right: 4%; }
-    .corner.bl{ bottom: 7%; left: 4%; }
-    .corner.br{ bottom: 7%; right: 4%; }
+    .balloon::after { content: ''; position: absolute; width: 2px; height: 50px; background: #fff; left: 50%; top: 54px; }
+    @keyframes rise { to { transform: translateY(-115vh); } }
 
-    /* 4) Grid thư 2×2; tự xuống 1 cột trên mobile */
+    /* 4) Ảnh góc: trên desktop có hover; mobile không chặn scroll */
+    .corner-photos { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+    .corner-photos .corner {
+      position: absolute;
+      width: min(170px, 22vw); aspect-ratio: 1/1; object-fit: cover;
+      border: none; outline: none; box-shadow: none !important; border-radius: 16px;
+      transition: transform .18s ease;
+      pointer-events: auto;
+    }
+    .corner-photos .corner:hover { transform: scale(1.08) rotate(-2deg); }
+    .corner.tl{ top: 7%;  left: 4%; } .corner.tr{ top: 7%;  right: 4%; }
+    .corner.bl{ bottom: 7%; left: 4%; } .corner.br{ bottom: 7%; right: 4%; }
+    /* Trên mobile tắt pointer-events để không chặn kéo */
+    @media (max-width: 900px){
+      .corner-photos .corner { pointer-events: none; }
+    }
+
+    /* 5) Grid thư: 2x2, xuống 1 cột khi màn nhỏ */
     .letters-grid{
       display: grid;
-      grid-template-columns: repeat(2, minmax(260px, 1fr));
-      grid-auto-rows: 1fr;
-      gap: 1.6rem;
-      max-width: 860px;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+      gap: 1.2rem;
+      max-width: 820px;
       margin: 0 auto;
     }
-    @media (max-width: 700px){
-      .letters-grid{ grid-template-columns: 1fr; max-width: 520px; }
+    @media (max-width: 720px){
+      .letters-grid{ grid-template-columns: 1fr; max-width: 500px; }
     }
 
-    /* BIG letter cards (giữ vibe cũ) */
+    /* 6) Card thư — thu nhỏ một chút để đỡ dài trên mobile */
     .letter-card-xl{
       background: rgba(255,246,237,.55);
       border: 2px solid rgba(255,246,237,1);
       border-radius: 25px;
-      padding: 2rem 1.25rem 1.75rem;
-      height: 260px;
+      padding: 1.4rem 1rem 1.2rem;
+      height: 220px; /* nhỏ hơn 260px */
       display: grid; place-items: center;
       cursor: pointer; overflow: hidden; transition: transform .18s ease;
     }
-    .letter-card-xl:hover{ transform: translateY(-4px); }
+    .letter-card-xl:hover{ transform: translateY(-3px); }
     .env-large{
-      width: 88%; max-width: 360px; aspect-ratio: 16/11;
-      background: #fff7ee; border-radius: 22px; position: relative;
+      width: 84%; max-width: 320px; aspect-ratio: 16/11;
+      background: #fff7ee; border-radius: 20px; position: relative;
       display: grid; place-items: center; overflow: hidden;
     }
     .env-large::before{
@@ -83,27 +88,20 @@
       background:#f2e6d1; clip-path: polygon(0 0, 100% 0, 50% 72%);
     }
     .env-text{ position:relative; z-index:2; text-align:center; color:#742c22; }
-    .env-text .from{ font-size:.95rem; letter-spacing:.08em; opacity:.85; margin-bottom:.2rem; }
-    .env-text .name{ font-weight:800; font-size:1.6rem; line-height:1.1; }
+    .env-text .from{ font-size:.9rem; letter-spacing:.08em; opacity:.85; margin-bottom:.15rem; }
+    .env-text .name{ font-weight:800; font-size:1.45rem; line-height:1.1; }
 
     .modal-text{ max-height: 65vh; overflow: auto; }
 
-    /* 5) Balloons layer (đặt dưới nội dung, không chặn click/scroll) */
-    #balloon-layer{ position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
-    .balloon{
-      position: absolute; width: 46px; height: 56px;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      bottom: -100px; opacity: .8; animation: rise linear infinite;
-    }
-    .balloon::after{ content: ''; position: absolute; width: 2px; height: 52px; background: #fff; left: 50%; top: 56px; }
-    @keyframes rise { to { transform: translateY(-115vh);} }
+    /* 7) Đảm bảo footer không bị dính sát đáy khi nội dung ngắn */
+    .app { position: relative; z-index: 5; }
   </style>
 </head>
 <body>
   <!-- balloons -->
   <div id="balloon-layer" aria-hidden="true"></div>
 
-  <!-- photos (keep if you’re using them) -->
+  <!-- photos -->
   <div class="corner-photos" aria-hidden="true">
     <img src="images/lam-1.png" alt="Lam photo 1" class="corner tl" />
     <img src="images/lam-2.png" alt="Lam photo 2" class="corner tr" />
@@ -171,7 +169,7 @@ Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng
 
   <!-- JS: step switch, modal, balloons -->
   <script>
-    // Mở step 2 + đảm bảo step 1 ẩn hẳn để không chặn scroll
+    // Unfold → ẩn hẳn step 1 để không chặn scroll
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
     document.getElementById('btn-open').addEventListener('click', () => {
@@ -195,7 +193,7 @@ Cảm ơn vì đã chơi chung, không có Lam thì nhóm thiếu năng lượng
       });
     });
 
-    // Balloons (Úc style)
+    // Balloons
     document.addEventListener('DOMContentLoaded', () => createBalloons(15));
     function createBalloons(count) {
       const host = document.getElementById('balloon-layer');

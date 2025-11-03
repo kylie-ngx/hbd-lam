@@ -4,14 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A message for Thanh Lam 💌</title>
-  <!-- main css -->
   <link rel="stylesheet" href="style.css" />
-  <!-- (optional) icon -->
   <link rel="icon" href="images/seal.png" />
 </head>
 <body>
-  <main class="app">
+  <!-- Balloon layer sits behind everything -->
+  <div id="balloon-layer" aria-hidden="true"></div>
 
+  <!-- Corner photos (hover-able) -->
+  <div class="corner-photos">
+    <img src="images/lam-1.jpg" alt="Lam photo 1" class="corner tl" />
+    <img src="images/lam-2.jpg" alt="Lam photo 2" class="corner tr" />
+    <img src="images/lam-3.jpg" alt="Lam photo 3" class="corner bl" />
+    <img src="images/lam-4.jpg" alt="Lam photo 4" class="corner br" />
+  </div>
+
+  <main class="app">
     <!-- STEP 1 -->
     <section class="step step-1 active" id="step-1">
       <div class="intro-card">
@@ -23,13 +31,9 @@
     <!-- STEP 2 -->
     <section class="step step-2" id="step-2">
       <div class="letters-wrapper">
-        <h1 class="headline">Happy Birthday, Lam! 🩷</h1>
-        <p class="subtext">
-          Đây là 4 lá thư của tụi mình. Click từng cái để đọc nha.
-        </p>
-        <div class="letters-grid" id="letters-grid">
-          <!-- cards sẽ được JS đổ vào -->
-        </div>
+        <h1 class="headline">Happy Birthday, Lam! 💗</h1>
+        <p class="subtext">Đây là 4 lá thư của tụi mình. Click từng cái để đọc nha.</p>
+        <div class="letters-grid" id="letters-grid"><!-- JS injects cards --></div>
       </div>
     </section>
 
